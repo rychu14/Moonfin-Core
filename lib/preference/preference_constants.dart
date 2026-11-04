@@ -80,6 +80,16 @@ enum PlayerTransportPosition {
   docked,
 }
 
+/// How big the player controls are drawn on phones and tablets.
+enum MobilePlayerControlsSize {
+  compact(0.7),
+  small(0.85),
+  normal(1.0);
+
+  const MobilePlayerControlsSize(this.scaleFactor);
+  final double scaleFactor;
+}
+
 enum DolbyVisionFallbackBehavior {
   ask,
   hdr10Fallback,

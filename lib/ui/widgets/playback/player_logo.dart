@@ -22,10 +22,18 @@ double playerLogoHeight({
 
 /// The item's logo in the player's top bar, sized by [playerLogoHeight].
 class PlayerLogo extends StatefulWidget {
-  const PlayerLogo({super.key, required this.image, this.errorBuilder});
+  const PlayerLogo({
+    super.key,
+    required this.image,
+    this.errorBuilder,
+    this.heightScale = 1.0,
+  });
 
   final ImageProvider image;
   final ImageErrorWidgetBuilder? errorBuilder;
+
+  /// Shrinks or grows the logo along with the rest of the player controls.
+  final double heightScale;
 
   @override
   State<PlayerLogo> createState() => _PlayerLogoState();
@@ -77,10 +85,12 @@ class _PlayerLogoState extends State<PlayerLogo> {
   Widget build(BuildContext context) {
     return Image(
       image: widget.image,
-      height: playerLogoHeight(
-        aspectRatio: _aspectRatio,
-        screenWidth: MediaQuery.sizeOf(context).width,
-      ),
+      height:
+          playerLogoHeight(
+            aspectRatio: _aspectRatio,
+            screenWidth: MediaQuery.sizeOf(context).width,
+          ) *
+          widget.heightScale,
       fit: BoxFit.contain,
       alignment: Alignment.centerLeft,
       errorBuilder: widget.errorBuilder,

@@ -4795,6 +4795,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
       children: [
         if (logoUrl != null) ...[
           PlayerLogo(
+            heightScale: _osdButtonScale,
             image: offlineAwareImageProvider(
               logoUrl,
               headers: serverImageHeaders,
@@ -5572,7 +5573,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
   /// does through the text scaler. A phone keeps its sizes like the rest of
   /// the app.
   double get _osdButtonScale => PlatformDetection.useMobileUi
-      ? 1.0
+      ? _prefs.get(UserPreferences.mobilePlayerControlsSize).scaleFactor
       : _prefs.get(UserPreferences.desktopUiScale).scaleFactor;
 
   bool get _transportDocked =>

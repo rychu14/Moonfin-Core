@@ -1,0 +1,56 @@
+# Unsigned iOS IPA for sideloading with Sideloadly or AltStore.
+# Run it from the Actions tab, then download the ios-sideload-ipa artifact.
+name: iOS Sideload Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: '3.47.2'
+
+jobs:
+  ios:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: Select Xcode 26.3
+        run: sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
+
+      - name: Resolve dependencies
+        run: |
+          flutter clean
+          flutter pub get
+
+      - name: Provision the bundled libretro cores
+        run: |
+          chmod +x ios/game_host/fetch_cores.sh ios/game_host/wrap_frameworks.sh
+          ./ios/game_host/fetch_cores.sh
+          ./ios/game_host/wrap_frameworks.sh
+
+      - name: Build unsigned IPA
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//' | cut -d'+' -f1 | tr -d '[:space:]')
+          flutter build ipa --release --no-codesign
+
+          APP_PATH=$(find build/ios/archive -type d -path '*/Products/Applications/*.app' | head -1)
+          TMPDIR=$(mktemp -d)
+          mkdir -p "$TMPDIR/Payload"
+          cp -R "$APP_PATH" "$TMPDIR/Payload/"
+          (cd "$TMPDIR" && zip -qry "$OLDPWD/MoonfinR_iOS_v${VERSION}_unsigned.ipa" Payload)
+          rm -rf "$TMPDIR"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-sideload-ipa
+          path: MoonfinR_iOS_v*_unsigned.ipa

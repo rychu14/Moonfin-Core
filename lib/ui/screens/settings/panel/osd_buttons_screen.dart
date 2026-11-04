@@ -33,6 +33,19 @@ class _OsdButtonsScreen extends StatelessWidget {
                     PlayerTransportPosition.docked => l10n.playerTransportDocked,
                   },
                 ),
+              if (PlatformDetection.useMobileUi)
+                EnumPreferenceTile<MobilePlayerControlsSize>(
+                  preference: UserPreferences.mobilePlayerControlsSize,
+                  title: 'Player controls size',
+                  description:
+                      'How big the buttons, title and logo are drawn on the player',
+                  icon: Icons.photo_size_select_small_rounded,
+                  labelOf: (v) => switch (v) {
+                    MobilePlayerControlsSize.compact => 'Compact (70%)',
+                    MobilePlayerControlsSize.small => 'Small (85%)',
+                    MobilePlayerControlsSize.normal => 'Normal (100%)',
+                  },
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                 child: Text(l10n.osdButtonsSectionDescription, style: hint),

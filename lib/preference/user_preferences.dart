@@ -2637,8 +2637,14 @@ class UserPreferences extends ChangeNotifier {
   /// A phone and a desktop can each want their own, so it isn't synced.
   static final playerTransportPosition = EnumPreference(
     key: 'pref_player_transport_position',
-    defaultValue: PlayerTransportPosition.onScreen,
+    defaultValue: PlayerTransportPosition.docked,
     values: PlayerTransportPosition.values,
+  );
+
+  static final mobilePlayerControlsSize = EnumPreference(
+    key: 'pref_mobile_player_controls_size',
+    defaultValue: MobilePlayerControlsSize.compact,
+    values: MobilePlayerControlsSize.values,
   );
 
   static final dolbyVisionFallbackBehavior = EnumPreference(
@@ -2991,7 +2997,7 @@ class UserPreferences extends ChangeNotifier {
   );
   static final hiddenOsdButtonsMobile = Preference(
     key: 'hiddenOsdButtonsMobile',
-    defaultValue: '',
+    defaultValue: 'syncPlay,favorite,speed,chapters,episodes,castAndCrew,zoom',
   );
   static final hiddenOsdButtonsDesktop = Preference(
     key: 'hiddenOsdButtonsDesktop',
